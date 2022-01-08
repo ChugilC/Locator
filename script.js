@@ -1,8 +1,4 @@
 "use strict";
-
-// prettier-ignore
-const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-
 const form = document.querySelector(".form");
 const containerWorkouts = document.querySelector(".workouts");
 const inputType = document.querySelector(".form__input--type");
@@ -11,6 +7,15 @@ const inputLocator = document.querySelector(".form__input--locator");
 // Global variable
 let map;
 let mapEvent;
+let locations = [];
+
+// Render locations
+function renderLoc(val) {
+  let html = `<li class="workout">
+    <h2>${val}</h2>
+  </li>`;
+  form.insertAdjacentHTML("afterend", html);
+}
 
 navigator.geolocation.getCurrentPosition(
   (pos) => {
@@ -49,7 +54,6 @@ navigator.geolocation.getCurrentPosition(
     alert("Can't get the current location");
   }
 );
-
 // Form event
 form.addEventListener("submit", (e) => {
   e.preventDefault();
@@ -58,6 +62,7 @@ form.addEventListener("submit", (e) => {
   inputLocator.value = "";
   // display the market
   const { lat, lng } = mapEvent.latlng;
+  form.classList.add("hidden");
   // marker
   L.marker([lat, lng])
     .addTo(map)
@@ -72,4 +77,8 @@ form.addEventListener("submit", (e) => {
     )
     .setPopupContent(`${val}`)
     .openPopup();
+  // location array
+  locations.push(val);
+  // render from list in sidebar
+  renderLoc(val);
 });
